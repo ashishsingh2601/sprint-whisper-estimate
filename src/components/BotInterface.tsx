@@ -223,16 +223,17 @@ const BotInterface = () => {
     
     addBotMessage(`Estimate received from ${estimatingMember.name}.`);
     
-    // If all members have estimated, complete the estimation
-    if (session.members.length === updatedEstimates.length) {
-      completeEstimation();
+    // If all members have estimated, complete the estimation immediately
+    if (updatedEstimates.length === session.members.length) {
+      // Use setTimeout to ensure state is updated before completing
+      setTimeout(() => completeEstimation(), 0);
     }
   };
   
   const completeEstimation = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     
-    // Make sure we include all estimates, even with only one member
+    // Make sure we include all estimates in the ticket estimation
     const newTicketEstimation: TicketEstimation = {
       id: generateUniqueId(),
       ticket: session.currentTicket,
