@@ -204,15 +204,18 @@ const BotInterface = () => {
       value: estimateValue
     };
     
+    const updatedEstimates = [...session.currentEstimates, newEstimate];
+    
     setSession(prev => ({
       ...prev,
-      currentEstimates: [...prev.currentEstimates, newEstimate]
+      currentEstimates: updatedEstimates
     }));
     
     addBotMessage(`Estimate received from ${estimatingMember.name}.`);
     
     // If all members have estimated, complete the estimation
-    if (session.members.length === session.currentEstimates.length + 1) {
+    // Fix: Changed to check equal length instead of +1
+    if (session.members.length === updatedEstimates.length) {
       completeEstimation();
     }
   };
@@ -220,10 +223,11 @@ const BotInterface = () => {
   const completeEstimation = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     
+    // Fix: Make sure we include all estimates, even with only one member
     const newTicketEstimation: TicketEstimation = {
       id: Date.now().toString(),
       ticket: session.currentTicket,
-      estimates: session.currentEstimates
+      estimates: [...session.currentEstimates] // Use all estimates
     };
     
     setSession(prev => ({
@@ -235,8 +239,6 @@ const BotInterface = () => {
     
     // Display results
     addBotMessage("Time's up! Here are the estimation results:");
-    
-    // Bot will show aggregated results in the UI via the EstimationResults component
   };
   
   const endSession = () => {
