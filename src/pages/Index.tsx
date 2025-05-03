@@ -1,7 +1,9 @@
 
 import { useState } from "react";
 import BotInterface from "@/components/BotInterface";
+import TeamsGuide from "@/components/TeamsGuide";
 import { Toaster } from "sonner";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const Index = () => {
   return (
@@ -15,14 +17,27 @@ const Index = () => {
       </header>
       
       <main className="flex-grow container mx-auto p-4 md:p-6 max-w-4xl">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
-          <div className="bg-gray-50 border-b border-gray-200 p-4">
-            <h2 className="text-lg font-semibold text-gray-700">Sprint Planning Session</h2>
-            <p className="text-sm text-gray-500">Estimate tickets collaboratively with your team</p>
-          </div>
+        <Tabs defaultValue="demo">
+          <TabsList className="mb-4">
+            <TabsTrigger value="demo">Demo Bot</TabsTrigger>
+            <TabsTrigger value="guide">Teams Integration Guide</TabsTrigger>
+          </TabsList>
           
-          <BotInterface />
-        </div>
+          <TabsContent value="demo">
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200">
+              <div className="bg-gray-50 border-b border-gray-200 p-4">
+                <h2 className="text-lg font-semibold text-gray-700">Sprint Planning Session</h2>
+                <p className="text-sm text-gray-500">Estimate tickets collaboratively with your team</p>
+              </div>
+              
+              <BotInterface />
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="guide">
+            <TeamsGuide />
+          </TabsContent>
+        </Tabs>
       </main>
       
       <footer className="bg-gray-100 border-t border-gray-200 p-4">

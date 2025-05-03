@@ -48,10 +48,20 @@ const BotInterface = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
   
+  // Generate a truly unique ID for messages to avoid React key warnings
+  const generateUniqueId = () => {
+    return `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  };
+  
   const addMessage = (message: Message) => {
+    const messageWithUniqueId = {
+      ...message,
+      id: generateUniqueId()
+    };
+    
     setSession(prev => ({
       ...prev,
-      messages: [...prev.messages, message]
+      messages: [...prev.messages, messageWithUniqueId]
     }));
   };
   
@@ -115,7 +125,7 @@ const BotInterface = () => {
   
   const addBotMessage = (content: string) => {
     const botMessage: Message = {
-      id: Date.now().toString(),
+      id: generateUniqueId(),
       sender: "bot",
       content,
       timestamp: new Date()
@@ -214,7 +224,6 @@ const BotInterface = () => {
     addBotMessage(`Estimate received from ${estimatingMember.name}.`);
     
     // If all members have estimated, complete the estimation
-    // Fix: Changed to check equal length instead of +1
     if (session.members.length === updatedEstimates.length) {
       completeEstimation();
     }
@@ -223,11 +232,11 @@ const BotInterface = () => {
   const completeEstimation = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
     
-    // Fix: Make sure we include all estimates, even with only one member
+    // Make sure we include all estimates, even with only one member
     const newTicketEstimation: TicketEstimation = {
-      id: Date.now().toString(),
+      id: generateUniqueId(),
       ticket: session.currentTicket,
-      estimates: [...session.currentEstimates] // Use all estimates
+      estimates: [...session.currentEstimates]
     };
     
     setSession(prev => ({
